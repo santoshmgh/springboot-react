@@ -22,5 +22,5 @@ export const addStudent = student => {
         },
         method: "POST",
         body: JSON.stringify(student)
-    });
+    }).then(checkStatus);
 }
