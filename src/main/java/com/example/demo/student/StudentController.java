@@ -4,6 +4,7 @@ import com.example.demo.student.exception.BadRequestException;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 //import java.util.Arrays;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class StudentController {
     }
 
     @RequestMapping(path = "api/v1/students", method = RequestMethod.POST)
-    public void addStudent(@RequestBody Student student) {
+    public void addStudent(@Valid @RequestBody Student student) {
 
         if (studentService.existsByEmailId(student.getEmail())) {
             throw new BadRequestException("Email id already exists");

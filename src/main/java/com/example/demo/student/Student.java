@@ -4,6 +4,9 @@ import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -26,9 +29,11 @@ public class Student {
     )
     private long id;
 
+    @NotBlank
     private String name;
+    @Email
     private String email;
-
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 }
