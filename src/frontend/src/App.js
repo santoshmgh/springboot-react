@@ -20,6 +20,7 @@ import {
 import { useState, useEffect } from "react";
 import {getAllStudents} from "./service/fetchStudent";
 import StudentDrawerForm from "./StudentDrawerForm";
+import {errorNotification} from "./Notification";
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -78,9 +79,13 @@ function App() {
             .then(response => response.json())
             .then(data => {
                             setStudents(data);
-                            setFetching(false);
+            }).catch(err => err.response.json()
+                .then(res => {
+                  errorNotification("Something went wrong ", `[${res.message}]`);
+            })).finally(() => {
+                setFetching( false);
             })
-    };
+        }
 
     useEffect(() => {
         fetchStudent();

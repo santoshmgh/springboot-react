@@ -12,17 +12,16 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudent}) {
         console.log(JSON.stringify(student, null, 2));
         addStudent(student)
             .then(() => {
-                console.log("Student Added");
-                successNotification("Add Student", student.name + " successfully added.")
+                successNotification("Adding student", student.name + " successful.")
                 fetchStudent();
             })
-            .catch(error => {
-                errorNotification("Add Student", student.name + " failed to add.")
-                alert("Error adding student");
-            })
+            .catch(error => error.response.json()
+                .then(res => {
+                    errorNotification("Adding student ", student.name + " failed." + `[${res.message}]`);
+                }))
             .finally(() => {
-              setShowDrawer(!showDrawer);
-        });
+                setShowDrawer(!showDrawer);
+            });
 
     };
 
@@ -89,7 +88,7 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudent}) {
             </Row>
             <Row>
                 <Col span={12}>
-                    <Form.Item >
+                    <Form.Item>
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>
