@@ -30,10 +30,13 @@ public class Student {
     private long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String name;
     @Email
+    @Column(nullable = false, unique = true)
     private String email;
     @NotNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 }
