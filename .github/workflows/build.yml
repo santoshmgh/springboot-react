@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:14-alpine
@@ -35,3 +35,5 @@ jobs:
       - name: Maven Clean Package
         run: |
           ./mvnw --no-transfer-progress clean package -P build-frontend
+        env:
+          CI: false
