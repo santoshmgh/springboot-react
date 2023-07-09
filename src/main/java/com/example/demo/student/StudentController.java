@@ -39,9 +39,18 @@ public class StudentController {
     @RequestMapping(path = "api/v1/students", method = RequestMethod.DELETE)
     public void deleteStudent(@RequestBody Student student) {
         if (studentService.existsById(student.getId())) {
-            throw new BadRequestException("Student Dont exists");
-        } else {
             studentService.deleteStudent(student.getId());
+        } else {
+            throw new BadRequestException("Student Dont exists");
+        }
+    }
+
+    @RequestMapping(path = "api/v1/students", method = RequestMethod.PUT)
+    public void updateStudent(@RequestBody Student student) {
+        if (studentService.existsById(student.getId()) && !studentService.existsByEmailId(student.getEmail())) {
+            studentService.updateStudent(student);
+        } else {
+            throw new BadRequestException("Student Dont exists");
         }
     }
 }

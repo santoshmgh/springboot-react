@@ -33,4 +33,8 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
+    public void updateStudent(@RequestBody Student student){
+        studentRepository.updateStudent(student.getName(), student.getEmail(), student.getGender(), student.getId());
+    }
+
 }
