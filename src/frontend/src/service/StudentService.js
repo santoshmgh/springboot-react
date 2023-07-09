@@ -24,3 +24,13 @@ export const addStudent = student => {
         body: JSON.stringify(student)
     }).then(checkStatus);
 }
+
+export  const deleteStudent = student => {
+    return fetch("api/v1/students", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify(student)
+    }).then(checkStatus);
+}

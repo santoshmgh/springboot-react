@@ -1,5 +1,5 @@
 import {Drawer, Input, Col, Select, Form, Row, Button} from 'antd';
-import {addStudent} from "./service/fetchStudent";
+import {addStudent} from "./service/StudentService";
 import {errorNotification, successNotification} from "./Notification";
 
 

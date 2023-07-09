@@ -1,26 +1,24 @@
 
 import './App.css';
 import {
-    FileOutlined,
-    PieChartOutlined,
-    DesktopOutlined,
-    TeamOutlined,
     UserOutlined,
     PlusOutlined
 } from '@ant-design/icons';
 import {
+    Avatar,
     Badge,
     Button,
     Divider, Empty,
     Layout,
-    Menu, Spin,
+    Menu, Popconfirm, Popover, Space, Spin,
     Table, Tag,
     theme
 } from 'antd';
 import { useState, useEffect } from "react";
-import {getAllStudents} from "./service/fetchStudent";
+import { deleteStudent as removeStudent, getAllStudents} from "./service/StudentService";
 import StudentDrawerForm from "./StudentDrawerForm";
-import {errorNotification} from "./Notification";
+import {errorNotification, successNotification} from "./Notification";
+import * as PropTypes from "prop-types";
 
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -32,39 +30,17 @@ function getItem(label, key, icon, children) {
     };
 }
 const items = [
-    getItem('Option 1', '1', <PieChartOutlined />),
-    getItem('Option 2', '2', <DesktopOutlined />),
     getItem('User', 'sub1', <UserOutlined />, [
-        getItem('Tom', '3'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
+        getItem('Customer', '1'),
     ]),
-    getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-    getItem('Files', '9', <FileOutlined />),
 ];
 
-const columns = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-    },
-    {
-        title: 'Gender',
-        dataIndex: 'gender',
-        key: 'gender',
-    },
-];
+function Fragment(props) {
+    return null;
+}
+
+Fragment.propTypes = {children: PropTypes.node};
+
 
 function App() {
     const [collapsed, setCollapsed] = useState(false);
@@ -73,19 +49,78 @@ function App() {
     const [students, setStudents] = useState([]);
     const [fetching, setFetching] = useState( true);
     const [showDrawer, setShowDrawer] = useState(false);
+    const [showEditStudentDrawer, setEditStudentDrawer] = useState(false);
+
+    const columns = [
+        {
+            title: '',
+            key: 'avatar',
+            render: (text, record) => (
+                <Avatar size='large'>
+                    {`${record.name.charAt(0).toUpperCase()}`}
+                </Avatar>
+            )
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+        },
+        {
+            title: 'Actions',
+            dataIndex: 'actions',
+            render: (text, record) => (
+                <Space wrap>
+                    <Popconfirm
+                        placement='topRight'
+                        title={`Are you sure to delete ${record.name}`}
+                        onConfirm={() => deleteStudent(record)} okText='Yes' cancelText='No'
+                        onCancel={e => e.stopPropagation()}>
+                        <Button onClick={(e) => e.stopPropagation()}>Delete</Button>
+                    </Popconfirm>
+                    <Popover title="Still working...">
+                        <Button style={{marginLeft: '5px'}} type='primary'>Edit</Button>
+                    </Popover>
+                </Space>
+            ),
+        },
+    ];
 
     const fetchStudent = () => {
         getAllStudents()
             .then(response => response.json())
             .then(data => {
-                            setStudents(data);
+                setStudents(data);
             }).catch(err => err.response.json()
-                .then(res => {
-                  errorNotification("Something went wrong ", `[${res.message}]`);
+            .then(res => {
+                errorNotification("Something went wrong ", `[${res.message}]`);
             })).finally(() => {
-                setFetching( false);
-            })
-        }
+            setFetching( false);
+        })
+    }
+
+    const deleteStudent = student => {
+        removeStudent(student).then(() => {
+            successNotification('success', `${student.name} was deleted`);
+            fetchStudent();
+        }).catch(err => err.response.json()
+            .then(res => {
+                errorNotification("Something went wrong ", `[${res.message}]`);
+            })).finally(() => {
+            setFetching( false);
+        })
+    }
+
 
     useEffect(() => {
         fetchStudent();
@@ -108,7 +143,7 @@ function App() {
                         <br/>
                         <br/>
                         <Button onClick={() => setShowDrawer(!showDrawer)} type="primary" shape="round" icon={<PlusOutlined />}>
-                            Download
+                            Add new Student
                         </Button>
                         <br/>
                         <StudentDrawerForm
@@ -168,7 +203,7 @@ function App() {
                         textAlign: 'center',
                     }}
                 >
-                    Ant Design ©2025 Created by Ant UED
+                    ©2023 Created by sghanti
                 </Footer>
             </Layout>
         </Layout>
